@@ -115,7 +115,7 @@ def findUser():
     #2. 미미 회원 파일 읽어오기 - 파일 
     #3. 이벤트 이미지에서 사용자 찾기
     #4. 메일 전송 하기
-    
+    #5. 테스트
     return jsonify(data)
 
 if __name__ == '__main__':
