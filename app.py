@@ -33,7 +33,7 @@ def home():
     return "<h1>우리는 알바 B조 입니다.</h1>"+"Hello, Flask!"
 
 # 사용자 리스트 입니다
-@app.route('/api/member/list', methods=['GET'])
+@app.route('/api/member/list', methods=['GET','POST'])
 def get_member():
     data = []
     try:
@@ -49,7 +49,7 @@ def get_member():
     return jsonify(data)
 
 # 사용자 추가
-@app.route('/api/member/add', methods=['POST'])
+@app.route('/api/member/add', methods=['GET','POST'])
 def set_members():
     data = {"result":"ok"}
     print("여기는 들어오나요")
@@ -59,7 +59,7 @@ def set_members():
     return jsonify(data)
 
 #모임 리스트
-@app.route('/api/event/list', methods=['GET'])
+@app.route('/api/event/list', methods=['GET','POST'])
 def get_events():
     data = []
     try:
