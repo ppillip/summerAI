@@ -86,7 +86,6 @@ def set_event():
     
     return jsonify(data)
 
-
 # 랜덤 이미지 파일명 생성 함수
 def generate_random_image_name(app_path, extension='.png'):
     random_filename = f"{uuid.uuid4()}{extension}"
@@ -105,11 +104,12 @@ def findUser():
             img_paths={
                         "Samuel" : f"{app_path}/work/사무엘잭슨.png",
                         "Egerton": f"{app_path}/work/테런에저턴.png",
-                        "Colin"  : f"{app_path}/work/콜린퍼스.png"},
+                        "Colin"  : f"{app_path}/work/콜린퍼스.png"
+                      },
             result_image_path=random_result_image_path)
     
     # 생성된 랜덤 파일명 출력
-    print(f"생성된 결과 이미지 경로: {random_result_image_path}")
+    print( f"생성된 결과 이미지 경로: {random_result_image_path}" )
     
     #1. 미미 회원 리스트 조회 - 몽고디비 
     #2. 미미 회원 파일 읽어오기 - 파일 

@@ -21,8 +21,13 @@ print("::: 얼굴 인코딩 모델 로딩")
 facerec = dlib.face_recognition_model_v1('./work/dlib_face_recognition_resnet_model_v1.dat') # 얼굴 인코딩 (128요소 벡터)변환
 
 
-
-# 이미지 경로를 주면 비교가 잘되는 img_gray (비교용)와 img_rgb(출력용) 두개를 리턴함
+# 1. 함수 기능 
+#      이미지 경로를 주면 비교가 잘되는 이미지를 리턴함
+# 2. 파라메터 
+#      imag_path ---- 이미지 경로
+# 3. 리턴값 
+#      img_gray ----- 비교용 파일 
+#      img_rgb ------ RGB로만 변환만한 파일
 def imageProcess(imag_path):
     img = cv2.imread(imag_path)
     print(imag_path)
@@ -43,37 +48,56 @@ def imageProcess(imag_path):
     # 출력용 컬러파일
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) # 컬러 처리
 
-    return img_gray, img_rgb
+    return img_gray, img_rgb  # 비교용 파일 gray 와 , RGB로 변환만한 파일
 
-
+# 1. 함수 기능 
+#      주어진 이미지에서 얼굴찾기
+# 2. 파라메터 
+#      img ---- 얼굴이미지 , 이 프로젝트에서는 imageProcess를 통해서 처리된것을 쓴다
+# 3. 리턴값 
+#      rects ----- N개의, 얼굴사각형 좌표
+#      shapes ---- N개의, 68개 점을 가진 dlib.full_object_detection 오브젝트
+#      shpaes_np - N개의, 68개의 점을 가진 배열
 def find_faces(img):
     dets = detector(img, 1)  # 얼굴 존재 여부 찾기
 
-    # 얼굴 못 찾은 경우
+    # detector가 얼굴 못 찾은 경우
     if len(dets) == 0:
         return np.empty(0), np.empty(0), np.empty(0)
 
     # 얼굴 좌표와 랜드마크 찾기
-    rects, shapes = [], [] #얼굴좌표, 랜드마크 초기화
-    shapes_np = np.zeros((len(dets), 68, 2), dtype=int)  # 랜드마크는 2차원으로 구현되므로 68x2가 필요함.
+    rects = []  # 얼굴좌표 변수 초기화  
+    shapes = [] # 얼굴배열
+    shapes_np = np.zeros((len(dets), 68, 2), dtype=int)  # 랜드마크 초기화 (2차원으로 구현되므로 68x2가 필요함)
 
     # 얼굴 찾은 개수 만큼 루프(좌표 입력: 좌우상하)
-    for k, d in enumerate(dets):
+    for k, d in enumerate(dets): #k는 인덱스이고, d는 dlib.rectangle 객체
+        #dlib.rectangle 객체에서 4개의 좌표를 뽑아 rect에 담음
         rect = ((d.left(), d.top()), (d.right(), d.bottom()))
         rects.append(rect)
-        shape = sp(img, d)  # 얼굴에서 68개 랜드마크 찾기
-
-     # convert dlib shape to numpy array
+        
+        # shape 는 dlib.full_object_detection
+        shape = sp(img, d)  # 얼굴 d 에서 68개 랜드마크 찾기
+        
+        # 68개의 점을 가진 shape(dlib.full_object_detection)을 넘파이 배열로 
         for i in range(0, 68):
             shapes_np[k][i] = (shape.part(i).x, shape.part(i).y)  # 68개 랜드마크를 2차원 값으로 표현
+
         shapes.append(shape)
 
-    return rects, shapes, shapes_np
+    return rects,  shapes,  shapes_np
 
-
+# 1. 함수 기능 
+#      128개의 요소를 가진 벡터를 리턴함    
+# 2. 파라메터 
+#      img ---- rgb로 변환한 이미지
+#      shapes - dlib.full_object_detection)
+# 3. 리턴값 
+#      np.array(face_descriptors) , 
 def encode_faces(img, shapes):
     face_descriptors = []
     for shape in shapes:
+        # 넘파이 배열
         face_descriptor = facerec.compute_face_descriptor(img, shape)   # 얼굴 인코딩 (128요소 벡터)변환
         face_descriptors.append(np.array(face_descriptor))
 
@@ -82,6 +106,14 @@ def encode_faces(img, shapes):
 
 
 
+# 1. 함수 기능 
+#      얼굴 이미지를 찾고 찾은 이미지에 박스로 그려서 저장함
+# 2. 파라메터
+#      event_image_path --- 사람들이 들어 있는 이미지
+#      img_paths ---------- 찾고 싶은 사람"들"의 이미지 
+#      result_image_path -- 찾은 얼굴을 마킹한 이미지
+# 3. 리턴값 
+#      return --- {"result":"ok"} //작업 종료를 알리는 리턴값
 
 def findAll(event_image_path, img_paths, result_image_path):
     
@@ -95,19 +127,13 @@ def findAll(event_image_path, img_paths, result_image_path):
     print("::: descs " , descs)
 
     for name, img_path in img_paths.items():
-        #img_bgr = cv2.imread(img_path)
-        #img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-
         img_gray, img_rgb = imageProcess(img_path)
 
         print(name)
         # RGB에서 얼굴 읽고 shape으로 받아오고, 이름에 맞게 저장
         rects, img_shapes, shapes_np = find_faces(img_gray) #이미지 그레이로 비교
-
         descs[name] = encode_faces(img_rgb, img_shapes)[0]
-
         # 중간 확인: 얼굴 검출 및 랜드마크 시각화
-##
 #        plt.imshow(img_rgb)
 
         ax = plt.gca()
@@ -120,13 +146,8 @@ def findAll(event_image_path, img_paths, result_image_path):
                 ax.add_patch(circle)
         plt.title(name)
         plt.axis('off')
-##
-#        plt.show()
-        
-        
+#        plt.show()                
 #        np.save('./descs.npy', descs)
-        
-        
 
     img_gray, img_rgb = imageProcess(event_image_path)
     rects, shapes, _ = find_faces(img_gray) #이미지 그레이로 비교
@@ -136,12 +157,15 @@ def findAll(event_image_path, img_paths, result_image_path):
     ax.imshow(img_rgb)
 
     for i, desc in enumerate(descriptors):
-        found = False
-        for name, saved_desc in descs.items():
-            dist = np.linalg.norm([desc] - saved_desc, axis=1)   # 128개 요소의 벡터 사이의 유클리디안 거리 이용
+        found = False 
+        
+        # 받은 이미지(desc)의 개수 만큼 이터레이션을 돌린다 
+        for name, saved_desc in descs.items(): 
+            # 128개 요소의 벡터 사이의 유클리디안 거리 이용 , 거리가 가까워야함!
+            dist = np.linalg.norm([desc] - saved_desc, axis=1)   
 
-            if dist < 0.6:    # threshold
-                found = True
+            if dist < 0.6:    # threshold , 0.6보다 가까울때
+                found = True  # 찾았다!
                 text = ax.text(rects[i][0][0], rects[i][0][1], name,
                         color='b', fontsize=30, fontweight='bold')
                 text.set_path_effects([path_effects.Stroke(linewidth=10, foreground='red'), path_effects.Normal()])
