@@ -91,7 +91,7 @@ def generate_random_image_name(app_path, extension='.png'):
     random_filename = f"{uuid.uuid4()}{extension}"
     return os.path.join(app_path, 'work', random_filename)
 
-@app.route('/api/findUser', methods=['GET'])
+@app.route('/api/findUser', methods=['GET','POST'])
 def findUser():
     data = {"result":"ok"}
     print("::: findUser")
