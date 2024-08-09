@@ -5,3 +5,5 @@ logs/
 uploads/
 # 사용자 이미지 제외
 static/images/member
+# 파이선 캐시 제외
+**__pychche__
