@@ -61,7 +61,7 @@
                         var row = $('<tr></tr>');
                         row.append('<td>' + event._id 
                         + '<br>' + event.desc 
-                        + '<br><img src="/static/images/event/' + event.image_check + '" width=300">'
+                        + '<br><img src="/images/event/' + event.image_check + '" width=300">'
                         + '<br> 참석자 : ' + event.attendance
                         +'</td>');
                         
@@ -74,7 +74,7 @@
             });
 
             $('.registerButton').on('click', function() {
-                window.location.href = 'eventRegistration';
+                window.location.href = 'eventRegistration.html';
             });
         });
     </script>

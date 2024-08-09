@@ -60,10 +60,10 @@
         $(document).ready(function() {
 
             $('#registerButton').on('click', function() {
-                window.location.href = 'memberRegistration';
+                window.location.href = 'memberRegistration.html';
             });        
             $('#requestButton').on('click', function() {
-                window.location.href = 'eventRegistration';
+                window.location.href = 'eventRegistration.html';
             });                    
             $.ajax({
                 url: '/api/member/list',
@@ -77,7 +77,7 @@
                         row.append('<td>'
                             +'학번 : ' + member._id
                             +'<br>이름 : ' + member.name
-                            +'<br><a href="/view/memberRegistration?_id='+member._id+'&name='+member.name+'"><img src="/static/images/member/' + member.photo + '" alt="Photo" width="100%"></a></br>'
+                            +'<br><a href="/memberRegistration.html?_id='+member._id+'&name='+member.name+'"><img src="/images/member/' + member.photo + '" alt="Photo" width="100%"></a></br>'
                         +'</td>');
                         memberTable.append(row);
                     });

@@ -16,9 +16,9 @@ print(os.getcwd())
 
 detector = dlib.get_frontal_face_detector()   # 얼굴 존재 여부 탐지 모델
 print("::: 랜드마크 로딩")
-sp = dlib.shape_predictor('./work/shape_predictor_68_face_landmarks.dat')  # 얼굴의 68개 랜드마크 찾기(2차원 값: x축, y 축)
+sp = dlib.shape_predictor('utils/shape_predictor_68_face_landmarks.dat')  # 얼굴의 68개 랜드마크 찾기(2차원 값: x축, y 축)
 print("::: 얼굴 인코딩 모델 로딩")
-facerec = dlib.face_recognition_model_v1('./work/dlib_face_recognition_resnet_model_v1.dat') # 얼굴 인코딩 (128요소 벡터)변환
+facerec = dlib.face_recognition_model_v1('utils/dlib_face_recognition_resnet_model_v1.dat') # 얼굴 인코딩 (128요소 벡터)변환
 
 
 # 1. 함수 기능 

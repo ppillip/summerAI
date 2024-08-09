@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, send_from_directory , request
 from pymongo.mongo_client import MongoClient
 from dotenv import load_dotenv
 from utils.find_users import findAll
@@ -27,18 +27,7 @@ memberCollection = mimi["member"]
 eventCollection = mimi["event"]
 
 app = Flask(__name__, template_folder='templates')
-
-# 메인페이지 라우팅 설정
-@app.route('/')
-def home():
-    return render_template('home.html')
-
-# html template 라우팅 설정
-# 브라우저 /view/requestSupport
-# 실제파일 /templates/requestSupport.html 
-@app.route('/view/<name>')
-def view(name):
-    return render_template(f'{name}.html')
+app = Flask(__name__, static_folder='public', static_url_path='/')
 
 # 사용자 리스트 입니다
 @app.route('/api/member/list', methods=['GET','POST'])
@@ -80,7 +69,7 @@ def set_members():
         filename = request.form['student_id'] + file_extension
         print("::::::",filename)
         
-        filepath = os.path.join("static/images/member", filename)
+        filepath = os.path.join("public/images/member", filename)
         file.save(filepath)
         
         student_id = request.form['student_id']
@@ -145,10 +134,10 @@ def set_event():
         new_filename = event_id + "-check" + file_extension
         print("::::::",filename, new_filename)
         
-        filepath = os.path.join("static/images/event", filename)
+        filepath = os.path.join("public/images/event", filename)
         file.save(filepath)
         
-        new_filepath = "static/images/event/" + new_filename
+        new_filepath = "public/images/event/" + new_filename
 
         #1. 미미 회원 리스트 조회
         print("데이터 조회 시작")
@@ -156,7 +145,7 @@ def set_event():
 
         img_paths = {};
         for doc in results:
-            img_paths[doc["_id"]] = "static/images/member/"+doc["photo"]
+            img_paths[doc["_id"]] = "public/images/member/"+doc["photo"]
 
         print( filepath, img_paths, new_filepath )
          #2. 이미지 비교해서 찾기
