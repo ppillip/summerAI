@@ -5,24 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Registration</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        #regButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #regButton:hover {
+            background-color: #45a049;
+        }        
+        #goListButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #goListButton:hover {
+            background-color: #45a049;
+        }                
+    </style>
 </head>
 <body>
-    <h2>미미 회원 등록</h2>
+    <h1>미미 회원 등록</h1>
     <form id="memberForm">
-        <label for="student_id">Student ID:</label>
-        <input type="text" id="student_id" required value="M87324"><br><br>
+        <label for="student_id">학번 :</label>
+        <input type="text" id="student_id" required><br><br>
         
-        <label for="name">Name:</label>
-        <input type="text" id="student_name" required value="박승현"><br><br>
+        <label for="name">이름 :</label>
+        <input type="text" id="student_name" required><br><br>
         
-        <label for="photo">Upload Photo:</label>
+        <label for="photo">사진 :</label>
         <input type="file" id="student_photo" accept="image/*" required><br><br>
         
-        <input type="submit" value="미미 회원 등록">
+        <input type="submit" id="regButton" value="회원 저장">
+        <input type="button" id="goListButton" value="회원 리스트">
     </form>
 
     <script>
+        console.log("asdfasdf");
+        const urlParams = new URLSearchParams(window.location.search);
+        const _id = urlParams.get('_id');
+        const name = urlParams.get('name');
+
+        // nice 값이 존재하면 페이지에 표시합니다.
+        if (_id !== null) {
+            $('#student_id').val(_id);
+            $('#student_name').val(name);
+        } else {
+            console.log("_id 없음");
+        }
+
         $(document).ready(function() {
+            $('#goListButton').on('click', function() {
+                window.location.href = 'memberList';
+            });        
+
             $('#memberForm').on('submit', function(e) {
                 e.preventDefault();
 

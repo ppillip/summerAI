@@ -113,14 +113,14 @@ def encode_faces(img, shapes):
 #      img_paths ---------- 찾고 싶은 사람"들"의 이미지 
 #      result_image_path -- 찾은 얼굴을 마킹한 이미지
 # 3. 리턴값 
-#      return --- {"result":"ok"} //작업 종료를 알리는 리턴값
+#      return --- attendance 찾은 사람들의 학번을 리턴하는 배열
 
 def findAll(event_image_path, img_paths, result_image_path):
     
     print("::: start findAll Function!!!")
     print("::: result file ====>",result_image_path)
     descs = {}       
-
+    attendance = [];
     for key, value in img_paths.items():
         descs[key]=None
 
@@ -166,6 +166,9 @@ def findAll(event_image_path, img_paths, result_image_path):
 
             if dist < 0.6:    # threshold , 0.6보다 가까울때
                 found = True  # 찾았다!
+                
+                attendance.append(name)
+                
                 text = ax.text(rects[i][0][0], rects[i][0][1], name,
                         color='b', fontsize=30, fontweight='bold')
                 text.set_path_effects([path_effects.Stroke(linewidth=10, foreground='red'), path_effects.Normal()])
@@ -189,4 +192,4 @@ def findAll(event_image_path, img_paths, result_image_path):
     plt.axis('off')
     plt.savefig(result_image_path)
 
-    return True
+    return attendance

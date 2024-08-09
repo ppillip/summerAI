@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
+
+    <style>
+        #regButton, #goEventList {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #regButton,#goEventList:hover {
+            background-color: #45a049;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>모임 등록</h1>
+    <form id="eventForm" enctype="multipart/form-data">
+        <label for="event_id">모임 일자 :</label>
+        <input type="text" id="event_id" name="event_id" required value="2024-08-08"><br><br>
+
+        <label for="desc">모임 내용 :</label>
+        <input type="text" id="desc" name="desc" required value="즐거운 모임"/><br><br>
+
+        <label for="image">모임 사진 :</label>
+        <input type="file" id="image" name="image" accept="image/*" required><br><br>
+
+        <input id="regButton" type="submit" value="이벤트 등록 하기">
+        <input id="goEventList" type="button" value="목록으로 돌아가기">
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            $( "#event_id" ).datepicker({dateFormat : 'yy-mm-dd'});
+
+            $('#goEventList').on('click', function() {
+                window.location.href = 'eventList';
+            });        
+
+            $('#eventForm').on('submit', function(event) {
+                
+                event.preventDefault(); // 기본 폼 제출 동작을 막습니다.
+
+                var formData = new FormData();
+                formData.append('event_id', $('#event_id').val());
+                formData.append('desc', $('#desc').val());
+                formData.append('image', $('#image')[0].files[0]);            
+
+                $.ajax({
+                    url: '/api/event/add',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        alert('Ok: ' + response.message);
+//                      window.location.href = 'eventList.html'; // 이벤트 리스트 페이지로 리디렉션
+                    },
+                    error: function(response) {
+                        alert('Error: ' + response.responseJSON.error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

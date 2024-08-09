@@ -26,7 +26,6 @@ mimi = client[db_name]
 memberCollection = mimi["member"]
 eventCollection = mimi["event"]
 
-app = Flask(__name__)
 app = Flask(__name__, template_folder='templates')
 
 # 메인페이지 라우팅 설정
@@ -80,7 +79,6 @@ def set_members():
         _, file_extension = os.path.splitext(file.filename)
         filename = request.form['student_id'] + file_extension
         print("::::::",filename)
-        #filename = secure_filename(file.filename)
         
         filepath = os.path.join("static/images/member", filename)
         file.save(filepath)
@@ -123,12 +121,66 @@ def get_events():
 #모임 요청
 @app.route('/api/event/add', methods=['POST'])
 def set_event():
-    data = []
     
-    #1. 미미 회원 리스트 조회 - 몽고디비 
-    #2. 미미 회원 파일 읽어오기 - 파일 
-    #3. 이벤트 이미지에서 사용자 찾기
+    data = []
+    if 'event_id' not in request.form or request.form['event_id']=="":
+        return jsonify({"error": "모임일자는 필수, '9999-12-31' 형식 "}), 400
+
+    if 'desc' not in request.form or request.form['desc']=="":
+        return jsonify({"error": "모임 설명을 넣어주세요"}), 400
+
+    if 'image' not in request.files:
+        return jsonify({"error": "파일이 없어요"}), 400
+
+    event_id = request.form['event_id']
+    desc = request.form['desc']        
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({"error": "선택된 파일이 없습니다"}), 400
+ 
+    if file:
+        #파일 확장자만 가져와서 ID로 바꾼다.
+        _, file_extension = os.path.splitext(file.filename)
+        filename = event_id + file_extension
+        new_filename = event_id + "-check" + file_extension
+        print("::::::",filename, new_filename)
+        
+        filepath = os.path.join("static/images/event", filename)
+        file.save(filepath)
+        
+        new_filepath = "static/images/event/" + new_filename
+
+        #1. 미미 회원 리스트 조회
+        print("데이터 조회 시작")
+        results = memberCollection.find({})
+
+        img_paths = {};
+        for doc in results:
+            img_paths[doc["_id"]] = "static/images/member/"+doc["photo"]
+
+        print( filepath, img_paths, new_filepath )
+         #2. 이미지 비교해서 찾기
+        attendance = findAll(event_image_path=filepath, img_paths=img_paths, result_image_path=new_filepath)    
+        
+        
+        # MongoDB에 데이터 저장
+        event_data = {
+            "_id": event_id,
+            "desc": desc,
+            "image": filename,            
+            "image_check" : new_filename, 
+            "attendance" : attendance
+        }
+
+        # Upsert 작업 수행 , 있으면 업데이트 없으면 인서트
+        eventCollection.update_one(
+            {"_id": event_id},  # 검색 조건
+            {"$set": event_data},  # 업데이트할 데이터
+            upsert=True  # upsert 옵션
+        )        
+    
     #4. 메일 전송 하기
+
     
     return jsonify(data)
 
@@ -146,7 +198,7 @@ def findUser():
     random_result_image_path = generate_random_image_name(app_path)
     
     #찾아봅시다
-    findAll(event_image_path=f"{app_path}/work/kingsman.png", 
+    attendance = findAll(event_image_path=f"{app_path}/work/kingsman.png", 
             img_paths={
                         "Samuel" : f"{app_path}/work/사무엘잭슨.png",
                         "Egerton": f"{app_path}/work/테런에저턴.png",
@@ -165,5 +217,4 @@ def findUser():
     return jsonify(data)
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    app.run(debug=True, host="localhost", port=9000)

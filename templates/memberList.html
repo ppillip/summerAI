@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member List</title>
+    <title>미미 회원 리스트</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         table {
@@ -17,25 +17,54 @@
             padding: 8px;
             text-align: left;
         }
+        #registerButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #registerButton:hover {
+            background-color: #45a049;
+        }        
+        #requestButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #requestButton:hover {
+            background-color: #45a049;
+        }                
     </style>
 </head>
 <body>
-    <h1>Member List</h1>
+    <h1>미미 회원 명단</h1>
     <table id="memberTable">
         <thead>
             <tr>
-                <th>학번</th>
-                <th>이름</th>
-                <th>사진</th>
+                <th>멤버</th>
             </tr>
         </thead>
         <tbody>
             <!-- 회원 리스트가 여기에 추가됩니다 -->
         </tbody>
     </table>
+    <button id="registerButton">회원 등록</button>
+    <button id="requestButton">모임 비용 요청</button>
 
     <script>
         $(document).ready(function() {
+
+            $('#registerButton').on('click', function() {
+                window.location.href = 'memberRegistration';
+            });        
+            $('#requestButton').on('click', function() {
+                window.location.href = 'eventRegistration';
+            });                    
             $.ajax({
                 url: '/api/member/list',
                 method: 'GET',
@@ -45,9 +74,11 @@
 
                     data.forEach(function(member) {
                         var row = $('<tr></tr>');
-                        row.append('<td>' + member._id + '</td>');
-                        row.append('<td>' + member.name + '</td>');
-                        row.append('<td><img src="/static/images/member/' + member.photo + '" alt="Photo" width="50"></td>');
+                        row.append('<td>'
+                            +'학번 : ' + member._id
+                            +'<br>이름 : ' + member.name
+                            +'<br><a href="/view/memberRegistration?_id='+member._id+'&name='+member.name+'"><img src="/static/images/member/' + member.photo + '" alt="Photo" width="100%"></a></br>'
+                        +'</td>');
                         memberTable.append(row);
                     });
                 },
