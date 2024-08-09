@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
 from pymongo.mongo_client import MongoClient
 from dotenv import load_dotenv
 from utils.find_users import findAll
@@ -9,7 +9,7 @@ load_dotenv()
 
 app_path = os.getcwd()
 
-print("::: 어플리케이션 패스 :",app_path)
+print("::: 어플리케이션 패스 :::",app_path)
 
 #환경 변수 불러오기
 db_username = os.getenv('DB_USERNAME')
@@ -27,10 +27,19 @@ memberCollection = mimi["member"]
 eventCollection = mimi["event"]
 
 app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
+# 메인페이지 라우팅 설정
 @app.route('/')
 def home():
-    return "<h1>우리는 알바 B조 입니다.</h1>"+"Hello, Flask!"
+    return render_template('home.html')
+
+# html template 라우팅 설정
+# 브라우저 /view/requestSupport
+# 실제파일 /templates/requestSupport.html 
+@app.route('/view/<name>')
+def view(name):
+    return render_template(f'{name}.html')
 
 # 사용자 리스트 입니다
 @app.route('/api/member/list', methods=['GET','POST'])
@@ -47,16 +56,53 @@ def get_member():
             "다음과 같은 에러가 발생하였습니다.: ", e)
 
     return jsonify(data)
+# 파일 저장 경로 설정
+
 
 # 사용자 추가
 @app.route('/api/member/add', methods=['GET','POST'])
 def set_members():
-    data = {"result":"ok"}
-    print("여기는 들어오나요")
-    test = request.form["test"]
-    print(test)
+    if 'student_photo' not in request.files:
+        return jsonify({"error": "파일이 없어요"}), 400
     
-    return jsonify(data)
+    file = request.files['student_photo']
+    if file.filename == '':
+        return jsonify({"error": "선택된 파일이 없습니다"}), 400
+
+    if 'student_id' not in request.form or request.form['student_id']=="":
+        return jsonify({"error": "학번은 필수입니다."}), 400
+    
+    if 'student_name' not in request.form or request.form['student_name']=="":
+        return jsonify({"error": "이름은 필수입니다"}), 400
+    
+    if file:
+        #파일 확장자만 가져와서 ID로 바꾼다.
+        _, file_extension = os.path.splitext(file.filename)
+        filename = request.form['student_id'] + file_extension
+        print("::::::",filename)
+        #filename = secure_filename(file.filename)
+        
+        filepath = os.path.join("static/images/member", filename)
+        file.save(filepath)
+        
+        student_id = request.form['student_id']
+        name = request.form['student_name']
+        
+        # MongoDB에 데이터 저장
+        member_data = {
+            "_id": student_id,
+            "name": name,
+            "photo": filename
+        }
+
+        # Upsert 작업 수행 , 있으면 업데이트 없으면 인서트
+        memberCollection.update_one(
+            {"_id": student_id},  # 검색 조건
+            {"$set": member_data},  # 업데이트할 데이터
+            upsert=True  # upsert 옵션
+        )
+        
+        return jsonify({"message": "미미 회원이 정상적으로 등록(변경) 되었어요"}), 201
 
 #모임 리스트
 @app.route('/api/event/list', methods=['GET','POST'])
@@ -71,7 +117,7 @@ def get_events():
     except Exception as e:
         raise Exception(
             "다음과 같은 에러가 발생하였습니다.: ", e)
-
+        
     return jsonify(data)
 
 #모임 요청

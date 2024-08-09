@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member List</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Member List</h1>
+    <table id="memberTable">
+        <thead>
+            <tr>
+                <th>학번</th>
+                <th>이름</th>
+                <th>사진</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 회원 리스트가 여기에 추가됩니다 -->
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '/api/member/list',
+                method: 'GET',
+                success: function(data) {
+                    var memberTable = $('#memberTable tbody');
+                    memberTable.empty(); // 기존 내용을 지웁니다
+
+                    data.forEach(function(member) {
+                        var row = $('<tr></tr>');
+                        row.append('<td>' + member._id + '</td>');
+                        row.append('<td>' + member.name + '</td>');
+                        row.append('<td><img src="/static/images/member/' + member.photo + '" alt="Photo" width="50"></td>');
+                        memberTable.append(row);
+                    });
+                },
+                error: function(error) {
+                    console.error('Error fetching member list:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
