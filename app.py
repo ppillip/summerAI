@@ -1,32 +1,12 @@
-from flask import Flask, jsonify, render_template, send_from_directory , request
-from pymongo.mongo_client import MongoClient
+from flask import Flask, jsonify, request
+from utils.collections import memberCollection, eventCollection
 from dotenv import load_dotenv
 from utils.find_users import findAll
 import os
 import uuid
 
-load_dotenv()
-
 app_path = os.getcwd()
-
 print("::: 어플리케이션 패스 :::",app_path)
-
-#환경 변수 불러오기
-db_username = os.getenv('DB_USERNAME')
-db_password = os.getenv('DB_PASSWORD')
-db_host = os.getenv('DB_HOST')
-db_name = os.getenv('DB_NAME')
-uri = f"mongodb+srv://{db_username}:{db_password}@{db_host}/?retryWrites=true&w=majority&appName=Cluster0"
-
-print(f"::: 디비URI [{uri}]")
-
-client = MongoClient(uri)
-print("::: 디비연결 성공")
-mimi = client[db_name]
-memberCollection = mimi["member"]
-eventCollection = mimi["event"]
-
-app = Flask(__name__, template_folder='templates')
 app = Flask(__name__, static_folder='public', static_url_path='/')
 
 # 사용자 리스트 입니다
