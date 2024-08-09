@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
-
     <style>
         table {
             width: 100%;
@@ -20,7 +19,7 @@
             padding: 8px;
             text-align: left;
         }
-        .registerButton {
+        .moveButton {
             margin-top: 20px;
             padding: 10px 20px;
             background-color: #4CAF50;
@@ -28,7 +27,7 @@
             border: none;
             cursor: pointer;
         }
-        .registerButton:hover {
+        .moveButton:hover {
             background-color: #45a049;
         }
     </style>
@@ -46,9 +45,16 @@
         </tbody>
     </table>
 
-    <button class="registerButton">이벤트 등록</button>
+    <button id="regEvent" class="moveButton">이벤트 등록</button>
+    <button id="goMemberList" class="moveButton">미미 회원 목록</button>
 
     <script>
+        $('#regEvent').on('click', function() {
+            window.location.href = 'eventRegistration.html';
+        });
+        $('#goMemberList').on('click', function() {
+            window.location.href = 'memberList.html';
+        });
 
         $(document).ready(function() {
             $.ajax({
@@ -73,9 +79,6 @@
                 }
             });
 
-            $('.registerButton').on('click', function() {
-                window.location.href = 'eventRegistration.html';
-            });
         });
     </script>
 </body>
