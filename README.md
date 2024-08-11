@@ -6,15 +6,15 @@
 
 ## 1. 소스 내려받기 
 
-git clone https://github.com/ppillip/summerAI.git
+    git clone https://github.com/ppillip/summerAI.git
 
 ## 2. 폴더로 이동
 
-cd summerAI
+    cd summerAI
 
 ## 3. 의존성 패키지 설치
 
-pip install -r requirements.txt
+    pip install -r requirements.txt
 
 ## 4. .env 파일 수정 
 
