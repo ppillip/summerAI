@@ -1,7 +1,5 @@
 서강대학교 AI_MBA 5기 SummerAI(Alba B team) 인공지능 응용실습 프로젝트 입니다. 
 
-![summerAI](https://github.com/user-attachments/assets/7b7d0063-4a21-4b15-b446-92587eba3be0)
-
 # 구동방법 
 
 ## 1. 소스 내려받기 
@@ -17,6 +15,7 @@
     pip install -r requirements.txt
 
 ## 4. .env 파일 수정 
+몽고디비 관련 설정을 수정합니다. 
 
     DB_USERNAME=사용자명
 
@@ -30,3 +29,6 @@
 ## 5. 콘솔에서 실행
 
     python app.py
+
+
+![summerAI](https://github.com/user-attachments/assets/7b7d0063-4a21-4b15-b446-92587eba3be0)    
