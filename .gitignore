@@ -9,6 +9,11 @@ uploads/
 # 사용자 이미지 제외
 static/images/member
 
+# 디자인 참조
+mobili/
+
+**old
+
 # 파이선 캐시 제외
 **__pychache__
 

@@ -30,7 +30,7 @@ facerec = dlib.face_recognition_model_v1('utils/dlib_face_recognition_resnet_mod
 #      img_rgb ------ RGB로만 변환만한 파일
 def imageProcess(imag_path):
     img = cv2.imread(imag_path)
-    print(imag_path)
+    
     if img is None:
         print(imag_path, " 이미지 파일을 찾을 수 없습니다.")
         return None, None
@@ -119,7 +119,7 @@ def findAll(event_image_path, img_paths, result_image_path):
     
     print("::: start findAll Function!!!")
     print("::: result file ====>",result_image_path)
-    descs = {}       
+    descs = {}
     attendance = [];
     for key, value in img_paths.items():
         descs[key]=None
@@ -129,7 +129,6 @@ def findAll(event_image_path, img_paths, result_image_path):
     for name, img_path in img_paths.items():
         img_gray, img_rgb = imageProcess(img_path)
 
-        print(name)
         # RGB에서 얼굴 읽고 shape으로 받아오고, 이름에 맞게 저장
         rects, img_shapes, shapes_np = find_faces(img_gray) #이미지 그레이로 비교
         descs[name] = encode_faces(img_rgb, img_shapes)[0]
@@ -162,11 +161,15 @@ def findAll(event_image_path, img_paths, result_image_path):
         # 받은 이미지(desc)의 개수 만큼 이터레이션을 돌린다 
         for name, saved_desc in descs.items(): 
             # 128개 요소의 벡터 사이의 유클리디안 거리 이용 , 거리가 가까워야함!
-            dist = np.linalg.norm([desc] - saved_desc, axis=1)   
-
+            dist = np.linalg.norm([desc] - saved_desc, axis=1)
+            similarity = cosine_similarity(desc, saved_desc)
+            
+            print(dist, similarity);
+            
             if dist < 0.6:    # threshold , 0.6보다 가까울때
+#            if dist > 0.9:    # threshold , 0.6보다 가까울때
                 found = True  # 찾았다!
-                
+                print(name, "찾았다!")
                 attendance.append(name)
                 
                 text = ax.text(rects[i][0][0], rects[i][0][1], name,
@@ -193,3 +196,9 @@ def findAll(event_image_path, img_paths, result_image_path):
     plt.savefig(result_image_path)
 
     return attendance
+
+def cosine_similarity(vec1, vec2):
+    dot_product = np.dot(vec1, vec2)
+    norm_vec1 = np.linalg.norm(vec1)
+    norm_vec2 = np.linalg.norm(vec2)
+    return dot_product / (norm_vec1 * norm_vec2)

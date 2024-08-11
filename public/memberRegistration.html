@@ -1,51 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Registration</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        #regButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        #regButton:hover {
-            background-color: #45a049;
-        }        
-        #goListButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        #goListButton:hover {
-            background-color: #45a049;
-        }                
-    </style>
-</head>
-<body>
-    <h1>미미 회원 등록</h1>
-    <form id="memberForm">
-        <label for="student_id">학번 :</label>
-        <input type="text" id="student_id" required><br><br>
-        
-        <label for="name">이름 :</label>
-        <input type="text" id="student_name" required><br><br>
-        
-        <label for="photo">사진 :</label>
-        <input type="file" id="student_photo" accept="image/*" required><br><br>
-        
-        <input type="submit" id="regButton" value="저장하기">
-        <input type="button" id="goListButton" value="회원 리스트">
-    </form>
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link rel="apple-touch-startup-image" href="images/apple-touch-startup-image-640x920.png">
+    <title>summerAI</title>
+    <link rel="stylesheet" href="css/swiper.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,900" rel="stylesheet">
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/swiper.min.js"></script>
+    <script src="js/jquery.custom.js"></script>
     <script>
         console.log("asdfasdf");
         const urlParams = new URLSearchParams(window.location.search);
@@ -53,19 +23,23 @@
         const name = urlParams.get('name');
 
         // nice 값이 존재하면 페이지에 표시합니다.
-        if (_id !== null) {
-            $('#student_id').val(_id);
-            $('#student_name').val(name);
-        } else {
-            console.log("_id 없음");
-        }
 
-        $(document).ready(function() {
-            $('#goListButton').on('click', function() {
+        $(document).ready(function () {
+            if (_id !== null) {
+                console.log(_id, name)
+                $('#student_id').val(_id);
+                $('#student_name').val(name);
+            } else {
+                console.log("_id 없음");
+            }
+
+
+
+            $('#goListButton').on('click', function () {
                 window.location.href = 'memberList.html';
-            });        
+            });
 
-            $('#memberForm').on('submit', function(e) {
+            $('#memberForm').on('submit', function (e) {
                 e.preventDefault();
 
                 var formData = new FormData();
@@ -79,16 +53,110 @@
                     data: formData,
                     contentType: false,
                     processData: false,
-                    success: function(response) {
+                    success: function (response) {
                         alert('Ok: ' + response.message);
                         window.location.href = '/memberList.html'
                     },
-                    error: function(response) {
+                    error: function (response) {
                         alert('Error: ' + response.responseJSON.error);
                     }
                 });
             });
         });
     </script>
+</head>
+
+<body id="mobile_wrap">
+    <!-- 사이드메뉴 -->
+    <div class="panel panel-left panel-reveal">
+
+        <div class="swiper-container-subnav multinav">
+            <div class="swiper-wrapper">
+
+                <div class="swiper-slide">
+                    <nav class="main_nav_underline">
+                        <ul>
+                            <li><a href="index.html"><img src="images/icons/gray/home.png" alt=""
+                                        title="" /><span>홈으로</span></a>
+                            </li>
+                            <li><a href="memberList.html"><img src="images/icons/gray/users.png" alt=""
+                                        title="" /><span>회원목록</span></a>
+                            </li>
+                            <li><a href="memberRegistration.html"><img src="images/icons/gray/user.png" alt=""
+                                        title="" /><span>회원등록</span></a>
+                            </li>
+                            <li><a href="eventList.html"><img src="images/icons/gray/blog.png" alt=""
+                                        title="" /><span>모임목록</span></a>
+                            </li>
+                            <li><a href="eventRegistration.html"><img src="images/icons/gray/photos.png" alt=""
+                                        title="" /><span>모임등록</span></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 사이드메뉴 끝-->
+
+    <div class="views">
+        <div class="view view-main">
+            <div class="pages">
+                <div data-page="form" class="page">
+                    <div class="page-content">
+
+                        <div class="navbar navbar--fixed navbar--fixed-top navbar--bg">
+                            <div class="navbar__col navbar__col--title">
+                                <a href="index.html">MimiPay</a>
+                            </div>
+                            <div class="navbar__col navbar__col--icon navbar__col--icon-right">
+                                <a href="#" data-panel="left" class="open-panel"><img src="images/icons/white/menu.png"
+                                        alt="" title="" /></a>
+                            </div>
+                        </div>
+
+
+                        <div id="pages_maincontent">
+
+                            <h2 class="page_title"><b>미미 회원 등록</b></h2>
+
+                            <div class="page_single layout_fullwidth_padding">
+                                <!---------- 페이지 메인 컨텐츠 -->
+                                <div class="contactform">
+                                    <form class="" id="memberForm" method="post" action="">
+                                        <div class="form_row">
+                                            <label>이름 :</label>
+                                            <input type="text" id="student_name" value="" class="form_input" required />
+                                        </div>
+
+                                        <div class="form_row">
+                                            <label>학번 :</label>
+                                            <input type="text" id="student_id" value="" class="form_input" required />
+                                        </div>
+
+                                        <div class="form_row">
+                                            <label>사진 :</label>
+                                            <input type="file" id="student_photo" accept="image/*" required>
+                                        </div>
+
+                                        <input type="submit" name="submit" class="form_submit" id="regButton"
+                                            value="회원 정보 저장"
+                                            style="margin:40px 0 10px 0;font-size:17px;font-weight:bold;" />
+                                        <input type="button" class="form_submit" id="goListButton" value="목록으로 돌아가기"
+                                            style="margin:0 0 10px 0;font-size:17px;font-weight:bold;" />
+                                    </form>
+                                </div>
+                                <!---------- 페이지 메인 컨텐츠 -->
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

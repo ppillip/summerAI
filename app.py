@@ -1,9 +1,10 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify,send_from_directory, request
 from utils.collections import memberCollection, eventCollection
 from dotenv import load_dotenv
 from utils.find_users import findAll
 import os
 import uuid
+
 
 app_path = os.getcwd()
 print("::: 어플리케이션 패스 :::",app_path)
@@ -15,6 +16,7 @@ def get_member():
     data = []
     try:
         print("데이터 조회 시작")
+        
         results = memberCollection.find({})
         for document in results:
             data.append(document)
@@ -158,6 +160,10 @@ def generate_random_image_name(app_path, extension='.png'):
     random_filename = f"{uuid.uuid4()}{extension}"
     return os.path.join(app_path, 'work', random_filename)
 
+@app.route('/')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
+
 @app.route('/api/findUser', methods=['GET','POST'])
 def findUser():
     data = {"result":"ok"}
@@ -186,4 +192,4 @@ def findUser():
     return jsonify(data)
 
 if __name__ == '__main__':
-    app.run(debug=True, host="localhost", port=9000)
+    app.run(debug=True, host="0.0.0.0", port=9000)

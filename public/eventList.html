@@ -1,85 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event List</title>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        .moveButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .moveButton:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-    <h1>Event List</h1>
-    <table id="eventTable">
-        <thead>
-            <tr>
-                <th>모임 내용</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- 이벤트 리스트가 여기에 추가됩니다 -->
-        </tbody>
-    </table>
-
-    <button id="regEvent" class="moveButton">이벤트 등록</button>
-    <button id="goMemberList" class="moveButton">미미 회원 목록</button>
-
-    <script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="apple-touch-startup-image" href="images/apple-touch-startup-image-640x920.png">
+  <title>summerAI</title>
+  <link rel="stylesheet" href="css/swiper.css">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,900" rel="stylesheet">
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/jquery.validate.min.js"></script>
+  <script src="js/swiper.min.js"></script>
+  <script src="js/jquery.custom.js"></script>
+  <script>
+    $(document).ready(function() {
         $('#regEvent').on('click', function() {
             window.location.href = 'eventRegistration.html';
         });
         $('#goMemberList').on('click', function() {
             window.location.href = 'memberList.html';
-        });
+        });        
+        $.ajax({
+            url: '/api/event/list',
+            method: 'GET',
+            success: function(data) {
+                var eventTable = $('#eventTable');
+                eventTable.empty(); // 기존 내용을 지웁니다
+                data.forEach(function(event) {
 
-        $(document).ready(function() {
-            $.ajax({
-                url: '/api/event/list',
-                method: 'GET',
-                success: function(data) {
-                    var eventTable = $('#eventTable tbody');
-                    eventTable.empty(); // 기존 내용을 지웁니다
-                    data.forEach(function(event) {
-                        var row = $('<tr></tr>');
-                        row.append('<td>' + event._id 
-                        + '<br>' + event.desc 
-                        + '<br><img src="/images/event/' + event.image_check + '" width=300">'
-                        + '<br> 참석자 : ' + event.attendance
-                        +'</td>');
-                        
-                        eventTable.append(row);
-                    });
-                },
-                error: function(error) {
-                    console.error('Error fetching event list:', error);
-                }
-            });
+					var htm = $('<ul class="responsive_table">'
+						+'<li class="table_row" style="width:100%">'
+							+'<div class="table_section">' + event._id + '</div>'                            
+						+'</li>'
+						+'<li class="table_row"><span>&nbsp;&nbsp;&nbsp;&nbsp;'
+                            + event.desc
+						+'</span></li>'                        
+						+'<li>'                            
+							+'<br><img src="/images/event/' + event.image_check + '" width=300">'
+						+'</li>'
+						+'<li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;참석자 : '
+                            + event.attendance
+						+'</span></li>'
 
+					+'<br>&nbsp;<br></ul>');
+                    eventTable.append(htm);
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching event list:', error);
+            }
         });
-    </script>
+    });
+  </script>  
+</head>
+
+<body id="mobile_wrap">
+<!-- 사이드메뉴 -->
+  <div class="panel panel-left panel-reveal">
+    
+    <div class="swiper-container-subnav multinav">
+      <div class="swiper-wrapper">
+
+        <div class="swiper-slide">
+          <nav class="main_nav_underline">
+            <ul>
+              <li><a href="index.html"><img src="images/icons/gray/home.png" alt="" title="" /><span>홈으로</span></a>
+              </li>
+              <li><a href="memberList.html"><img src="images/icons/gray/users.png" alt="" title="" /><span>회원목록</span></a>
+              </li>
+              <li><a href="memberRegistration.html"><img src="images/icons/gray/user.png" alt="" title="" /><span>회원등록</span></a>
+              </li>
+              <li><a href="eventList.html"><img src="images/icons/gray/blog.png" alt="" title="" /><span>모임목록</span></a>
+              </li>
+              <li><a href="eventRegistration.html"><img src="images/icons/gray/photos.png" alt="" title="" /><span>모임등록</span></a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<!-- 사이드메뉴 끝-->  
+
+<div class="views">
+    <div class="view view-main">
+      <div class="pages">
+        <div data-page="form" class="page">
+          <div class="page-content">
+
+            <div class="navbar navbar--fixed navbar--fixed-top navbar--bg">
+              <div class="navbar__col navbar__col--title">
+                <a href="index.html">MimiPay</a>
+              </div>
+              <div class="navbar__col navbar__col--icon navbar__col--icon-right">
+                <a href="#" data-panel="left" class="open-panel"><img src="images/icons/white/menu.png" alt=""
+                    title="" /></a>
+              </div>
+            </div>
+
+
+            <div id="pages_maincontent">
+
+              <h2 class="page_title">지난 미미 모임</h2>
+             
+              <div class="page_single layout_fullwidth_padding">
+<!---------- 페이지 메인 컨텐츠 -->
+                <div id="eventTable" class="page_single layout_fullwidth_padding">
+                
+                </div>
+<!---------- 페이지 메인 컨텐츠 -->
+              </div>
+              <div class="page_single layout_fullwidth_padding">				
+				<input type="button" class="btn btn--full" id="regEvent" value="지난 모임 등록 / 지원금 요청 " style="margin:0 0 10px 0;font-size:17px;font-weight:bold;"/>					
+				<input type="button" class="btn btn--full" id="goMemberList" value="미미 회원 목록"  style="margin:0 0 10px 0;font-size:17px;font-weight:bold;"/>					
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>

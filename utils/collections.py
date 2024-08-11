@@ -10,7 +10,7 @@ db_password = os.getenv('DB_PASSWORD')
 db_host = os.getenv('DB_HOST')
 db_name = os.getenv('DB_NAME')
 uri = f"mongodb+srv://{db_username}:{db_password}@{db_host}/?retryWrites=true&w=majority&appName=Cluster0"
-
+#uri = f"mongodb://localhost:3001/?readPreference=primary&directConnection=true&ssl=false"
 print(f"::: 디비URI [{uri}]")
 
 client = MongoClient(uri)
