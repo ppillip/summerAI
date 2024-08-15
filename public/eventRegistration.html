@@ -22,7 +22,7 @@
 
         $('#goEventList').on('click', function() {
             window.location.href = 'eventList.html';
-        });        
+        });
 
         $('#eventForm').on('submit', function(event) {
             
@@ -40,7 +40,8 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    alert('Ok: ' + response.message);
+                    console.log(response);
+                    alert('Ok: 지원금 요청을 완료 하였습니다');
 //                      window.location.href = 'eventList.html'; // 이벤트 리스트 페이지로 리디렉션
                 },
                 error: function(response) {

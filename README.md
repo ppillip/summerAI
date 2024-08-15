@@ -31,4 +31,4 @@
     python app.py
 
 
-![summerAI](https://github.com/user-attachments/assets/7b7d0063-4a21-4b15-b446-92587eba3be0)    
+![summerAI](https://github.com/user-attachments/assets/7b7d0063-4a21-4b15-b446-92587eba3be0)

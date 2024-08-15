@@ -1,5 +1,6 @@
 from flask import Flask, jsonify,send_from_directory, request
 from utils.collections import memberCollection, eventCollection
+from utils.send_email import send_email_4_support
 from dotenv import load_dotenv
 from utils.find_users import findAll
 import os
@@ -148,12 +149,18 @@ def set_event():
             {"_id": event_id},  # 검색 조건
             {"$set": event_data},  # 업데이트할 데이터
             upsert=True  # upsert 옵션
-        )        
+        )                
+        #4. 메일 전송 하기    
+        
+        print("이거를.... ",  attendance)
+        
+        title = f'{event_id} 미미모임 지원금 요청드립니다.'
+        content = '미미 모임 지원금 주세효오오~'
+        receiver = 'ppillip@gmail.com'  #'myungkim@sogang.ac.kr'  #교수님 메일주소로 바꿀것
+        filename = new_filepath #'/Users/ppillip/Projects/summerAI/public/images/event/2024-02-05-check.jpeg'
+        send_email_4_support(title,content,receiver,filename)
     
-    #4. 메일 전송 하기
-
-    
-    return jsonify(data)
+    return jsonify(attendance)
 
 # 랜덤 이미지 파일명 생성 함수
 def generate_random_image_name(app_path, extension='.png'):
@@ -184,11 +191,6 @@ def findUser():
     # 생성된 랜덤 파일명 출력
     print( f"생성된 결과 이미지 경로: {random_result_image_path}" )
     
-    #1. 미미 회원 리스트 조회 - 몽고디비 
-    #2. 미미 회원 파일 읽어오기 - 파일 
-    #3. 이벤트 이미지에서 사용자 찾기
-    #4. 메일 전송 하기
-    #5. 테스트
     return jsonify(data)
 
 if __name__ == '__main__':

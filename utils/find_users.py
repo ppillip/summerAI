@@ -124,17 +124,13 @@ def findAll(event_image_path, img_paths, result_image_path):
     for key, value in img_paths.items():
         descs[key]=None
 
-    print("::: descs " , descs)
-
     for name, img_path in img_paths.items():
-        img_gray, img_rgb = imageProcess(img_path)
-
+        img_gray, img_rgb = imageProcess(img_path)        
         # RGB에서 얼굴 읽고 shape으로 받아오고, 이름에 맞게 저장
         rects, img_shapes, shapes_np = find_faces(img_gray) #이미지 그레이로 비교
         descs[name] = encode_faces(img_rgb, img_shapes)[0]
         # 중간 확인: 얼굴 검출 및 랜드마크 시각화
 #        plt.imshow(img_rgb)
-
         ax = plt.gca()
         for rect in rects:
             rect_patch = patches.Rectangle(rect[0], rect[1][0] - rect[0][0], rect[1][1] - rect[0][1], linewidth=1, edgecolor='w', facecolor='none')
@@ -147,7 +143,6 @@ def findAll(event_image_path, img_paths, result_image_path):
         plt.axis('off')
 #        plt.show()                
 #        np.save('./descs.npy', descs)
-
     img_gray, img_rgb = imageProcess(event_image_path)
     rects, shapes, _ = find_faces(img_gray) #이미지 그레이로 비교
     descriptors = encode_faces(img_rgb, shapes)
@@ -164,12 +159,11 @@ def findAll(event_image_path, img_paths, result_image_path):
             dist = np.linalg.norm([desc] - saved_desc, axis=1)
             similarity = cosine_similarity(desc, saved_desc)
             
-            print(dist, similarity);
             
-            if dist < 0.6:    # threshold , 0.6보다 가까울때
+            if dist < 0.4:    # threshold , 0.6보다 가까울때
 #            if dist > 0.9:    # threshold , 0.6보다 가까울때
                 found = True  # 찾았다!
-                print(name, "찾았다!")
+                print(dist, similarity,name, "찾았다!");                
                 attendance.append(name)
                 
                 text = ax.text(rects[i][0][0], rects[i][0][1], name,
@@ -183,7 +177,7 @@ def findAll(event_image_path, img_paths, result_image_path):
                 break
 
         if not found:
-            print('unknown')
+            print(dist, similarity,name, "unknown!");                
             ax.text(rects[i][0][0], rects[i][0][1], 'unknown',
                     color='r', fontsize=20, fontweight='bold')
             rect = patches.Rectangle(rects[i][0],
@@ -194,7 +188,7 @@ def findAll(event_image_path, img_paths, result_image_path):
 
     plt.axis('off')
     plt.savefig(result_image_path)
-
+    
     return attendance
 
 def cosine_similarity(vec1, vec2):
