@@ -10,9 +10,7 @@ import matplotlib.patches as patches
 import matplotlib.patheffects as path_effects
 
 # Agg 백엔드 설정
-matplotlib.use('Agg')  
-
-print(os.getcwd())
+matplotlib.use('Agg')
 
 detector = dlib.get_frontal_face_detector()   # 얼굴 존재 여부 탐지 모델
 print("::: 랜드마크 로딩")
@@ -158,7 +156,6 @@ def findAll(event_image_path, img_paths, result_image_path):
             # 128개 요소의 벡터 사이의 유클리디안 거리 이용 , 거리가 가까워야함!
             dist = np.linalg.norm([desc] - saved_desc, axis=1)
             similarity = cosine_similarity(desc, saved_desc)
-            
                
             if dist < 0.4:    # threshold , 0.6보다 가까울때
 #            if dist > 0.9:    # threshold , 0.6보다 가까울때

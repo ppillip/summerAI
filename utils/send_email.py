@@ -24,7 +24,7 @@ smtp_info = {
 #     "smtp_port": 587
 # }
 
-print(smtp_info)
+print("::: 메일 설정 완료 ")
 
 
 

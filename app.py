@@ -171,27 +171,5 @@ def generate_random_image_name(app_path, extension='.png'):
 def serve_index():
     return send_from_directory(app.static_folder, 'index.html')
 
-@app.route('/api/findUser', methods=['GET','POST'])
-def findUser():
-    data = {"result":"ok"}
-    print("::: findUser")
-    
-    # 랜덤 이미지 파일명 생성
-    random_result_image_path = generate_random_image_name(app_path)
-    
-    #찾아봅시다
-    attendance = findAll(event_image_path=f"{app_path}/work/kingsman.png", 
-            img_paths={
-                        "Samuel" : f"{app_path}/work/사무엘잭슨.png",
-                        "Egerton": f"{app_path}/work/테런에저턴.png",
-                        "Colin"  : f"{app_path}/work/콜린퍼스.png"
-                      },
-            result_image_path=random_result_image_path)
-    
-    # 생성된 랜덤 파일명 출력
-    print( f"생성된 결과 이미지 경로: {random_result_image_path}" )
-    
-    return jsonify(data)
-
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=9000)

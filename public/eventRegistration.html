@@ -32,7 +32,13 @@
             formData.append('event_id', $('#event_id').val());
             formData.append('desc', $('#desc').val());
             formData.append('image', $('#image')[0].files[0]);            
-
+            i = 0
+            var timer = setInterval(function() {
+              i++;
+              if (i%2==0) txt = "처리중입니다 ^.^";
+              else txt = "처리중입니다 ^.-";
+              $("#regButton").val(txt);
+            }, 500); // 500ms마다 값 변경
             $.ajax({
                 url: '/api/event/add',
                 method: 'POST',
@@ -40,11 +46,14 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    console.log(response);
+                    clearInterval(timer);
+                    $("#regButton").val("저장하기");
                     alert('Ok: 지원금 요청을 완료 하였습니다');
 //                      window.location.href = 'eventList.html'; // 이벤트 리스트 페이지로 리디렉션
                 },
                 error: function(response) {
+                  clearInterval(timer);
+                  $("#regButton").val("저장하기");
                     alert('Error: ' + response.responseJSON.error);
                 }
             });
