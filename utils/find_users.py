@@ -159,7 +159,7 @@ def findAll(event_image_path, img_paths, result_image_path):
             dist = np.linalg.norm([desc] - saved_desc, axis=1)
             similarity = cosine_similarity(desc, saved_desc)
             
-            
+               
             if dist < 0.4:    # threshold , 0.6보다 가까울때
 #            if dist > 0.9:    # threshold , 0.6보다 가까울때
                 found = True  # 찾았다!
