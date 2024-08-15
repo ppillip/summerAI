@@ -25,6 +25,16 @@
 
     DB_NAME=mimi (이거는 그냥 두세요)
 
+보내는 메일 서버 설정을 수정합니다. 
+
+    SMTP_SERVER=smtp.naver.com (네이버입니다)
+
+    SMTP_USER_ID=보내는 메일 주소
+
+    SMTP_USER_PW=보내는 메일 비밀 번호
+
+    SMTP_PORT=587 (포트입니다)
+
 
 ## 5. 콘솔에서 실행
 
